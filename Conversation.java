@@ -30,39 +30,42 @@ class Conversation {
 
     for(int i = 0; i < numRounds; i++) {  //generates a response for each input/round
                                           //starts at index 0 of transcript
-      String oneResponse = input.nextLine(); //Advances the "input" scanner past the current line and returns the line that was skipped
-      transcript[(2 * i + 1)] = oneResponse; //the inputted response is put in every 2 indeces after index 0
+      String userResponse = input.nextLine(); //Advances the "input" scanner past the current line and returns the line that was skipped
+      transcript[(2 * i + 1)] = userResponse; //the inputted response is put in every 2 indeces after index 0
 
-      String[] oneResponseAsArray = oneResponse.split(" "); //takes the inputted string and splits the words into an array
+      String[] userWords = userResponse.split(" "); //takes the inputted string and splits the words into an array
       
       String new_sentence = "";
-      boolean replace_worthy = false;
-      //boolean haveReplacedAWord = false;
+      boolean hasReplacedWord = false;
 
       //for(String user_word : oneResponseAsArray)
-      for(int j = 0; j < oneResponseAsArray.length; j++) { //goes along the inputed array word by word
-        String word = "";
-        for (int k = 0; k < stop_words.length; k++) { //checks each inputed word with each stop word, goes along the stop_words array
-          if(oneResponseAsArray[j].equals(stop_words[k])) { //if a word in the inputted array is a stop word
-            word = replacement_words[k]; //actually switches the code words if identified
-            replace_worthy = true;
-          } else {
-            word = oneResponseAsArray[j];
+      for(int j = 0; j < userWords.length; j++) { //goes along the inputed array word by word
+        String replacement = "";
+        for(int k = 0; k < stop_words.length; k++) {
+          if(userWords[j].equals(stop_words[k])){
+            replacement = replacement_words[k];
+            hasReplacedWord = true;
           }
         }
-        if(replace_worthy) {
-          if(j == oneResponseAsArray.length - 1) { //if the word is the last one of the input response
-              new_sentence = new_sentence + word + "?";
-            } else {
-              new_sentence = new_sentence + word + " ";
-            }
+        if(replacement.equals("")) {
+          new_sentence += userWords[j] + " ";
         } else {
-          //check if new sentence equals the original inputted sentence - oneResponse
-    
-          new_sentence = cannedResponses[(int) Math.floor(numCannedResponses * Math.random())]; //generate a random canned response
-          }
+          new_sentence += replacement + " ";
+        }
+
+        //if word is mirror-able:
+          //find replacement for word
+          //new_sentence += replacement + " ";
+          //haveReplacedAWord = true;
+
       }
+
+      if(!hasReplacedWord) {
+        new_sentence = cannedResponses[(int) Math.floor(numCannedResponses * Math.random())];
+      }
+
       //take care of the trancscript:
+
       transcript[2 * i + 2] = new_sentence; //what the computer prints in response to the human input
       System.out.println(new_sentence);
     }
